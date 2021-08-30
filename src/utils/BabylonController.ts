@@ -17,7 +17,7 @@ export default class BabylonController {
 
   settings = {
     sphereDiameter: 4096, //! MUST FIT THE COORDINATES DIMENSIONS !\\
-    debugLayer: false, // Enable for Babylon scene explorer and inspector
+    debugLayer: true, // Enable for Babylon scene explorer and inspector
     freeCam: false, // Enable for easier navigation
     fov: 1, // field of view
     hotspotSize: 1.5,
@@ -43,9 +43,10 @@ export default class BabylonController {
       1.56,
       1.3,
       10,
-      new BABYLON.Vector3(0, 2, 0),
+      new BABYLON.Vector3(0, 0, 0),
       this.scene
     );
+    this.camera.attachControl(this.canvas);
     this.light = new BABYLON.HemisphericLight(
       "light",
       new BABYLON.Vector3(0, 1, 0),
