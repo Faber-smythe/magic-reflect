@@ -9,7 +9,7 @@ export default class BabylonController {
   canvas!: HTMLCanvasElement;
   engine!: BABYLON.Engine;
   scene!: BABYLON.Scene;
-  camera!: BABYLON.Camera;
+  camera!: BABYLON.ArcRotateCamera;
   light!: BABYLON.Light;
   GUI!: GUI.AdvancedDynamicTexture;
   SM!: BABYLON.SpriteManager;
@@ -40,13 +40,14 @@ export default class BabylonController {
     // Set up basic environment
     this.camera = new BABYLON.ArcRotateCamera(
       "camera1",
-      1.56,
-      1.3,
+      -1.56,
+      1,
       10,
       new BABYLON.Vector3(0, 0, 0),
       this.scene
     );
     this.camera.attachControl(this.canvas);
+    this.camera.wheelPrecision = 10
     this.light = new BABYLON.HemisphericLight(
       "light",
       new BABYLON.Vector3(0, 1, 0),

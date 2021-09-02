@@ -60,16 +60,16 @@ export default class HelloWorld extends Vue {
   }
 
   loadScene(): void {
-    console.log(this.testFrame);
     // this.loadCube();
-    this.loadWalkingMan();
+    // this.loadWalkingFigure();
+    this.loadNodesMan();
   }
 
   loadCube(): void {
     const _cube = BABYLON.MeshBuilder.CreateBox("box", {}, this.BC.scene);
   }
 
-  loadWalkingMan(): void {
+  loadWalkingFigure(): void {
     // Parameter
     const width = 0.05;
 
@@ -266,6 +266,221 @@ export default class HelloWorld extends Vue {
       },
       false
     );
+  }
+
+  loadNodesMan(): void {
+    // Parameter
+    const width = 0.03;
+    const scaleFactor = 100; // TODO appropriate scaling
+
+    // Our nodes.
+    const nodes = this.testFrame.body_pose.map(
+      (node) =>
+        new BABYLON.Vector3(
+          node[2] / scaleFactor,
+          -node[3] / scaleFactor,
+          (node[4] * Math.sin(this.BC.degreesToRadians(13.8))) / scaleFactor
+        )
+    );
+
+    // create node meshes
+    nodes.forEach((node, i) => {
+      const sphere = BABYLON.MeshBuilder.CreateSphere(`node-${i}`, {
+        diameter: width * 2,
+      });
+      sphere.position = new BABYLON.Vector3(node.x, node.y, node.z);
+      if ([11, 12, 23, 24, 1, 2, 3, 4, 5, 6].includes(i)) {
+        sphere.visibility = 1;
+      } else {
+        sphere.visibility = 1;
+      }
+    });
+
+    // Built-in 'ground' shape.
+    var ground = BABYLON.MeshBuilder.CreateGround(
+      "ground",
+      { width: 25, height: 25 },
+      this.BC.scene
+    );
+    ground.position.y = -9.5;
+    const groundMat = new BABYLON.StandardMaterial("groundMat", this.BC.scene);
+    groundMat.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+    ground.material = groundMat;
+
+    // pairing nodes to build our segments
+    // node IDs are here (https://google.github.io/mediapipe/solutions/pose.html#pose-landmark-model-blazepose-ghum-3d)
+    const chest = [
+      [nodes[11], nodes[12]],
+      [nodes[12], nodes[24]],
+      [nodes[24], nodes[23]],
+      [nodes[23], nodes[11]],
+    ];
+    const face = [
+      [nodes[1], nodes[2]],
+      [nodes[2], nodes[3]],
+      [nodes[4], nodes[5]],
+      [nodes[5], nodes[6]],
+      [nodes[9], nodes[10]],
+    ];
+    const leftArm = [
+      [nodes[11], nodes[13]],
+      [nodes[13], nodes[15]],
+      [nodes[15], nodes[17]],
+      [nodes[17], nodes[19]],
+      [nodes[19], nodes[15]],
+      [nodes[15], nodes[21]],
+    ];
+    const leftFoot = [
+      [nodes[23], nodes[25]],
+      [nodes[25], nodes[27]],
+      [nodes[27], nodes[29]],
+      [nodes[29], nodes[31]],
+      [nodes[31], nodes[27]],
+    ];
+    const rightArm = [
+      [nodes[12], nodes[14]],
+      [nodes[14], nodes[16]],
+      [nodes[16], nodes[18]],
+      [nodes[18], nodes[20]],
+      [nodes[20], nodes[16]],
+      [nodes[16], nodes[22]],
+    ];
+    const rightFoot = [
+      [nodes[24], nodes[26]],
+      [nodes[26], nodes[28]],
+      [nodes[28], nodes[30]],
+      [nodes[30], nodes[32]],
+      [nodes[32], nodes[28]],
+    ];
+    const segments = chest
+      .concat(face)
+      .concat(leftArm)
+      .concat(rightArm)
+      .concat(leftFoot)
+      .concat(rightFoot);
+    // initializing our Array of tubes (segment meshes)
+    const tubes: BABYLON.Mesh[] = [];
+
+    // Delete all existing tubes
+    const _disposeTubes = () => {
+      tubes.forEach((tube) => {
+        tube.dispose();
+      });
+    };
+    // Draw new tubes from the nodes positions
+    const drawTubes = (segments: BABYLON.Vector3[][]) => {
+      segments.forEach((segment) => {
+        console.log(segment);
+        tubes[0] = BABYLON.MeshBuilder.CreateTube(
+          "tube",
+          { path: segment, radius: width },
+          this.BC.scene
+        );
+      });
+    };
+    const updateCameraTarget = () => {
+      this.BC.camera.setTarget(
+        BABYLON.Vector3.Center(
+          BABYLON.Vector3.Center(nodes[11], nodes[12]),
+          BABYLON.Vector3.Center(nodes[23], nodes[24])
+        )
+      );
+    };
+    drawTubes(segments);
+    // let i = 0;
+    // let amplitudeFactor = 0.4;
+    // let speedFactor = 1.4;
+
+    // animating
+    this.BC.scene.registerBeforeRender(() => {
+      // i += 0.1;
+      // limbs walking
+      // leftFoot.position.z = Math.cos(i * speedFactor) * 0.8 * amplitudeFactor;
+      // rightFoot.position.z = -Math.cos(i * speedFactor) * 0.8 * amplitudeFactor;
+      // leftHand.position.z = -Math.cos(i * speedFactor) * 0.8 * amplitudeFactor;
+      // rightHand.position.z = Math.cos(i * speedFactor) * 0.8 * amplitudeFactor;
+      // // spine forward bobbing
+      // head.position.z = (Math.cos(i * 2 * speedFactor) / 6) * amplitudeFactor;
+      // neck.position.z = (Math.cos(i * 2 * speedFactor) / 15) * amplitudeFactor;
+      // pelvis.position.z =
+      //   (-Math.cos(i * 2 * speedFactor) / 20) * amplitudeFactor;
+      // // spine lateral bobbing
+      // head.position.x = (-Math.cos(i * speedFactor) / 13) * amplitudeFactor;
+      // neck.position.x = (-Math.cos(i * speedFactor) / 15) * amplitudeFactor;
+      // pelvis.position.x = (Math.cos(i * speedFactor) / 20) * amplitudeFactor;
+      // delete previous skeleton
+      // disposeTubes();
+      // draw new skeleton
+      // drawTubes();
+    });
+    updateCameraTarget();
+
+    /**
+     * GUI SLIDER
+     */
+    /*
+    const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    let panel = new GUI.StackPanel();
+    panel.width = "220px";
+    panel.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    panel.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    advancedTexture.addControl(panel);
+
+    const addSlider = (
+      title: string,
+      value: number,
+      min: number,
+      max: number,
+      onChange: (arg?: any) => void,
+      isInteger: boolean
+    ) => {
+      var label = new GUI.TextBlock();
+      label.text = title + ": " + (isInteger ? value | 0 : value.toFixed(2));
+      label.height = "30px";
+      label.color = "white";
+      panel.addControl(label);
+
+      var slider = new GUI.Slider();
+      slider.minimum = min;
+      slider.maximum = max;
+      slider.value = value;
+      slider.height = "20px";
+      slider.width = "200px";
+      slider.onValueChangedObservable.add(function (value) {
+        label.text = title + ": " + (isInteger ? value | 0 : value.toFixed(2));
+        onChange(value);
+      });
+      panel.addControl(slider);
+    };
+
+    // amplitude slider
+    addSlider(
+      "amplitude",
+      speedFactor,
+      0,
+      2.5,
+      (value) => {
+        amplitudeFactor = value;
+      },
+      false
+    );
+
+    // speed slider
+    addSlider(
+      "speed",
+      amplitudeFactor,
+      0,
+      5,
+      (value) => {
+        speedFactor = value;
+      },
+      false
+    );
+    */
+
+    // console.log(nodes);
+    console.log(this.testFrame);
   }
 }
 </script>
