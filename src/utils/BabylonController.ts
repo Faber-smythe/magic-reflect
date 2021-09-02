@@ -47,7 +47,7 @@ export default class BabylonController {
       this.scene
     );
     this.camera.attachControl(this.canvas);
-    this.camera.wheelPrecision = 10
+    this.camera.wheelPrecision = 10;
     this.light = new BABYLON.HemisphericLight(
       "light",
       new BABYLON.Vector3(0, 1, 0),
@@ -55,7 +55,7 @@ export default class BabylonController {
     );
 
     // set the canvas background to transparent
-    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
 
     // Initialize Babylon asset manager
     this.AM = new BABYLON.AssetsManager(this.scene);
