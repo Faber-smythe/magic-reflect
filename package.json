@@ -9,12 +9,13 @@
   },
   "dependencies": {
     "@types/resize-observer-browser": "^0.1.6",
-    "babylonjs": "^4.2.0",
+    "babylonjs": "^4.2",
     "babylonjs-gui": "^4.2.0",
+    "babylonjs-loaders": "^4.2",
     "core-js": "^3.6.5",
     "earcut": "^2.2.3",
     "gsap": "^3.7.1",
-    "install": "^0.13.0", 
+    "install": "^0.13.0",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0"
   },

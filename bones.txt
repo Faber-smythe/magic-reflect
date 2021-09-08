@@ -1,0 +1,20 @@
+2 "mixamorig:Spine" 0, 0, 0
+5 "mixamorig:Neck" x, 0, z
+
+10 "mixamorig:LeftShoulder" 0, y, z
+11 "mixamorig:LeftArm" 0, y, z
+12 "mixamorig:LeftForeArm" 0, y, z
+13 "mixamorig:LeftHand" 0, y, z
+
+63 "mixamorig:LeftUpLeg" x, 0, z
+64 "mixamorig:LeftLeg" x, 0, z
+65 "mixamorig:LeftFoot" x, 0, z
+
+34 "mixamorig:RightShoulder" 0, y, z
+35 "mixamorig:RightArm" 0, y, z
+36 "mixamorig:RightForeArm" 0, y, z
+37 "mixamorig:RightHand" 0, y, z
+
+58 "mixamorig:RightUpLeg" x, 0, z
+59 "mixamorig:RightLeg" x, 0, z
+60 "mixamorig:RightFoot"x, 0, z
